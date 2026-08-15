@@ -1,0 +1,44 @@
+// Java code​​​​​‌​​​​​​​​‌​‌​​​‌‌‌​‌​‌​‌​​ below
+// Write your answer here, and then test your code.
+import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.Map;
+
+
+// This is how your code will be called.
+// You can edit this code to try different testing cases.
+public class Test{
+  public static void main(String[] args){
+    String text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
+    String result = Answer.mostRepeatedWord(text);
+  }
+}
+class Answer {
+
+    // Change these boolean values to control whether you see 
+    // the expected result and/or hints.
+    static boolean showExpectedResult = false;
+    static boolean showHints = false;
+
+    // Return the most repeated for in the input string.
+    static Set<String> stopWords = new HashSet<>(Arrays.asList(
+    "the", "a", "or", "an", "it", "and", "but", "is", 
+    "are", "of", "on", "to", "was", "were", "in", "that", "i", 
+    "your", "his", "their", "her", "you", "me", "they", "at", "be"
+));
+    static String mostRepeatedWord(String text) {
+        // Your code goes here.
+        String[] spyd= text.split("[\\s.,:;!?(){]+");
+
+        List<String> al = Arrays.asList(spyd);
+
+        Map<String, Long> hm = al.stream().filter(x -> !stopWords.contains(x)).map(String :: toLowerCase) .collect(Collectors.groupingBy(i -> i, Collectors.counting()));
+        String y = hm.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey();
+
+        System.out.println(hm);
+        return y;
+    }
+
+}
