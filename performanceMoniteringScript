@@ -1,0 +1,68 @@
+/******************************************
+Author:    
+    Ayush Rastogi
+
+Description:
+    This scrpit is used to monitor Heap memory, CPU usage and thread counts.
+    All information will be captured in application logs, will be used for analysis.
+
+********************************************/
+
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import java.lang.management.ManagementFactory
+import com.sun.management.OperatingSystemMXBean
+import java.lang.management.ThreadMXBean
+import java.lang.management.MemoryMXBean
+
+// create scheduler safely
+def scheduler = Executors.newSingleThreadScheduledExecutor()
+
+def logStats = {
+    try {
+        def runtime = Runtime.getRuntime()
+        def threadBean = ManagementFactory.getThreadMXBean()
+
+        long max = runtime.maxMemory()
+        long total = runtime.totalMemory()
+        long free = runtime.freeMemory()
+        long used = total - free
+
+        def toMB = { bytes -> String.format("%.2f", bytes / (1024.0 * 1024.0)) }
+
+        def osBean = ManagementFactory.getOperatingSystemMXBean() as OperatingSystemMXBean
+
+        def processCpuLoad = osBean.getProcessCpuLoad()
+        def systemCpuLoad = osBean.getSystemCpuLoad()
+
+        def processCpu = processCpuLoad >= 0 ? String.format("%.2f", processCpuLoad * 100) : "N/A"
+        def systemCpu = systemCpuLoad >= 0 ? String.format("%.2f", systemCpuLoad * 100) : "N/A"
+
+        def percentUsed = String.format("%.2f", (used * 100.0) / max)
+        def cpuCores = osBean.getAvailableProcessors()
+
+        int threadCount = threadBean.getThreadCount()
+        int peakThreadCount = threadBean.getPeakThreadCount()
+
+        logger.info("===== JVM HEALTH SNAPSHOT =====")
+        logger.info("Memory Used: ${percentUsed}%")
+        logger.info("Heap: Used: ${toMB(used)} MB | Free: ${toMB(free)} MB | Total: ${toMB(total)} MB | Max: ${toMB(max)} MB")
+        logger.info("CPU Cores: ${cpuCores}")
+        logger.info("System CPU Load: ${systemCpu}%")
+        logger.info("JVM CPU Load: ${processCpu}%")
+        logger.info("Current Threads: ${threadCount}")
+        logger.info("Peak Threads: ${peakThreadCount}")
+        logger.info("================================")
+
+
+    } catch (Exception e) {
+        logger.error("Error collecting JVM stats", e)
+    }
+}
+
+// schedule every 5 minutes
+scheduler.scheduleAtFixedRate(logStats, 0, 5, TimeUnit.MINUTES)
+
+logger.info("JVM monitoring started (runs every 5 minutes)")
+
+return "JVM monitoring scheduled successfully"
