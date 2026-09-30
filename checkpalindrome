@@ -1,0 +1,40 @@
+private HashMap<String, Customer> cache = new HashMap<>();
+ 
+public Customer get(String id) {
+    if (!cache.containsKey(id)) {
+        cache.put(id, loadCustomer(id));
+    }
+    return cache.get(id);
+}
+
+import java.io.*;
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class Solution {
+    public static void main(String[] args) {
+        String text = "Mom and Dad have a racecar and a Kayak";
+        // Split by spaces to isolate individual words
+        String[] words = text.split(" ");
+        
+        int maxLen = 0;
+        String longestPalindrome = "";
+        
+        for (String s : words) {
+            // Clean the word or make it lowercase for case-insensitive check
+            String lowerWord = s.toLowerCase();
+            String reversed = new StringBuilder(lowerWord).reverse().toString();
+            
+            // Check if it is a palindrome and longer than current max
+            if (lowerWord.equals(reversed)) {
+                if (s.length() > maxLen) {
+                    maxLen = s.length();
+                    longestPalindrome = s;
+                }
+            }
+        }
+        
+        System.out.println("Longest Palindrome: " + longestPalindrome);
+        System.out.println("Length: " + maxLen);
+    }
+}
