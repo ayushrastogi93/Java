@@ -1,0 +1,40 @@
+
+
+int a = 0; 
+int b =1;
+a = a+b; b =a-b;  // 
+Syso(a , b )
+
+
+
+int[] ar =  {1,2,3,1}; 
+0,1,2,3, 4 = 10 
+
+n length array 
+
+// find the missing number in array
+
+Using a HashSet is significantly better than using JSON for finding a missing element in an array.
+A HashSet is a specialized data structure designed for fast lookups, while JSON is a data serialization format meant for transferring data,
+ not for algorithmic computations.Here is a direct comparison of both approaches using Java:
+ 
+ import java.util.HashSet;
+
+public class MissingElement {
+    public static void main(String[] args) {
+        int[] ar = {1, 2, 3, 1}; // Duplicate '1' means '4' is missing from a 1-4 sequence
+        int n = 4; // Expected total elements (1 to 4)
+        
+        HashSet<Integer> set = new HashSet<>();
+        for (int num : ar) {
+            set.add(num);
+        }
+        
+        // Find which number from 1 to n is missing
+        for (int i = 1; i <= n; i++) {
+            if (!set.contains(i)) {
+                System.out.println("Missing element: " + i); // Outputs 4
+            }
+        }
+    }
+}
