@@ -1,0 +1,36 @@
+Input : { "F", "BB", "F", "F","BB","F", "DD", "DD", "CC" } \\
+
+Output = { "F-1","BB-1","F-2", "BB-1", "F-1" , "DD-2", "CC-1"} 
+
+
+
+import java.util.*;
+
+public class Solution {
+    public static void main(String[] args) {
+        String[] input = {"F", "BB", "F", "F", "BB", "F", "DD", "DD", "CC"};
+        List<String> output = new ArrayList<>();
+        
+        if (input.length == 0) {
+            System.out.println(output);
+            return;
+        }
+
+        int count = 1;
+        for (int i = 1; i < input.length; i++) {
+            // If current element matches the previous one, increment consecutive count
+            if (input[i].equals(input[i - 1])) {
+                count++;
+            } else {
+                // Store the group result and reset the counter
+                output.add(input[i - 1] + "-" + count);
+                count = 1;
+            }
+        }
+        // Add the final remaining group
+        output.add(input[input.length - 1] + "-" + count);
+
+        // Print final result
+        System.out.println(output);
+    }
+}
